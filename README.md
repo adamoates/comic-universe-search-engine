@@ -4,42 +4,85 @@ A search engine for comic book characters and issues, powered by the Comic Vine 
 
 ## Built with
 
----
+- Node.js
+- Express 5
+- React 19
+- Vite 6
 
-Node.js
-Express
-React
+## Features
 
-## Comic Vine API
+- Search for characters (e.g. Spider-Man, Batman)
+- Search for comic issues (e.g. Avengers, X-Men)
+- View detailed character info, descriptions, and first appearances
+- View comic issue details with cover art
+- Paginated results
 
----
+## Getting started
 
-Visit the link to create a free Comic Vine API key
+### 1. Get a Comic Vine API key
 
-[Comic Vine API](https://comicvine.gamespot.com/api/)
+Visit [Comic Vine API](https://comicvine.gamespot.com/api/) and sign up for a free key.
 
-1. Create `api/.env` with your key: `COMIC_VINE_API_KEY=your_key_here`
-2. See `api/.env.example` for reference
+### 2. Configure the API key
 
-## Docker commands
+```bash
+cp api/.env.example api/.env
+```
 
----
-Docker command to build the project
+Edit `api/.env` and add your key:
 
-```docker-compose build```
+```
+COMIC_VINE_API_KEY=your_key_here
+```
 
-Docker command to start the project
+### 3. Install and run
 
-```docker-compose up```
+**Backend:**
 
-Docker command to build the api
+```bash
+cd api
+npm install
+node app.js
+```
 
-```docker-compose up -d app```
+**Frontend:**
 
-Docker command to build the frontend
+```bash
+cd client
+npm install
+npm start
+```
 
-```docker-compose up -d client```
+- API runs on http://localhost:4000
+- Frontend runs on http://localhost:3000
 
-Docker command to shutdown the project
+## Docker
 
-```docker-compose down```
+Build the project:
+
+```bash
+docker-compose build
+```
+
+Start the project:
+
+```bash
+docker-compose up
+```
+
+Start individual services:
+
+```bash
+docker-compose up -d app
+docker-compose up -d client
+```
+
+Shutdown:
+
+```bash
+docker-compose down
+```
+
+## Attribution
+
+Data provided by [Comic Vine](https://comicvine.gamespot.com/). Used for non-commercial purposes only.
