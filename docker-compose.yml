@@ -12,17 +12,6 @@ services:
     container_name: app
     restart: always
     build: ./api
-    ports: 
-      - "4000:4000"    
-    depends_on: 
-      - mongo
-  mongo:  
-    container_name: mongo
-    image: mongo
-    restart: always
-    expose:
-      - "27017"
-    volumes:
-      - ./data:/data/db
+    env_file: ./.env
     ports:
-      - "27017:27017"
+      - "4000:4000"
