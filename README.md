@@ -1,23 +1,25 @@
-# Marvel Search Engine
+# Comic Universe Search Engine
 
-Marvel Search Engine is an application build with the Marvel Developers API.
-Allowing fans and collectors to track and monitor comic releases, series and character info.
+A search engine for comic book characters and issues, powered by the Comic Vine API.
 
-## Marvel Developer Portal API
+## Built with
 
 ---
 
-Visit the link to create a Marvel Developers API key
+Node.js
+Express
+React
 
-[Marvel Developers Portal Link](https://developer.marvel.com/documentation/getting_started)
+## Comic Vine API
 
-Make sure the API key is formatted with md5 digest (e.g. md5(ts+privateKey+publicKey))
+---
 
-(the hash value is the md5 digest of 1abcd1234)
+Visit the link to create a free Comic Vine API key
 
-For example, a user with a public key of "1234" and a private key of "abcd" could construct a valid call as follows:
+[Comic Vine API](https://comicvine.gamespot.com/api/)
 
-[http://gateway.marvel.com/v1/public/comics?ts=1&apikey=1234&hash=ffd275c5130566a2916217b101f26150]
+1. Create `api/.env` with your key: `COMIC_VINE_API_KEY=your_key_here`
+2. See `api/.env.example` for reference
 
 ## Docker commands
 
@@ -29,10 +31,6 @@ Docker command to build the project
 Docker command to start the project
 
 ```docker-compose up```
-
-Docker command to build the mongodb
-
-```docker-compose up -d mongo```
 
 Docker command to build the api
 

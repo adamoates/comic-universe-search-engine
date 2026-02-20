@@ -1,38 +1,274 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  min-height: 100vh;
+  background: #1a1a2e;
+  color: #eee;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background: #e23636;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.search-form {
+  margin-bottom: 2rem;
+}
+
+.search-controls {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  gap: 0.5rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #333;
+  border-radius: 6px;
+  background: #16213e;
+  color: #eee;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #e23636;
+}
+
+.search-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background: #e23636;
   color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.App-link {
-  color: #61dafb;
+.search-btn:hover {
+  background: #c62828;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.search-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.type-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1rem;
+  background: #16213e;
+  color: #aaa;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle-btn.active {
+  background: #e23636;
+  color: white;
+  border-color: #e23636;
+}
+
+.error {
+  color: #ff6b6b;
+  text-align: center;
+}
+
+.result-count {
+  color: #888;
+  margin-bottom: 1rem;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.result-card {
+  background: #16213e;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.result-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(226, 54, 54, 0.3);
+}
+
+.card-img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+}
+
+.card-info {
+  padding: 0.75rem;
+}
+
+.card-info h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+}
+
+.card-info span {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.card-deck {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: #aaa;
+  line-height: 1.3;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  background: #e23636;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #888;
+}
+
+.detail-panel {
+  background: #16213e;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid #555;
+  color: #aaa;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.back-btn:hover {
+  color: white;
+  border-color: #e23636;
+}
+
+.detail-content {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.detail-img {
+  width: 250px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.detail-info h2 {
+  margin: 0 0 0.5rem;
+}
+
+.real-name,
+.issue-num {
+  color: #888;
+  margin: 0 0 0.5rem;
+}
+
+.deck {
+  font-size: 1rem;
+  color: #ccc;
+  margin: 0 0 1rem;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.publisher,
+.first-appearance {
+  margin-top: 1rem;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.placeholder {
+  text-align: center;
+  color: #666;
+  margin-top: 4rem;
+  font-size: 1.1rem;
+}
+
+.App-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.App-footer a {
+  color: #e23636;
+  text-decoration: none;
+}
+
+.App-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .detail-content {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+  .detail-img {
+    width: 100%;
+  }
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
