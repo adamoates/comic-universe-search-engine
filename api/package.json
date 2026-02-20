@@ -1,5 +1,5 @@
 {
-  "name": "marvel-search-engine",
+  "name": "comic-universe-search-engine",
   "version": "1.0.0",
   "description": "Search engine for Marvel characters and comics using Comic Vine API",
   "main": "app.js",
