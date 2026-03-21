@@ -5,6 +5,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const routes = require("./routes");
+const releaseRoutes = require("./routes/releases");
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -28,12 +29,13 @@ app.use(
 );
 
 // Body parsing with size limits
-app.use(express.urlencoded({ extended: true, limit: "1kb" }));
-app.use(express.json({ limit: "1kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express.json({ limit: "10kb" }));
 
 app.use(morgan("tiny"));
 
 app.use("/", routes());
+app.use("/", releaseRoutes());
 
 // Global error handler – never leak internals
 app.use((err, _req, res, _next) => {
