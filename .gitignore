@@ -150,3 +150,6 @@ dist
 .ionide
 
 /data
+
+# Claude Code
+.claude/
