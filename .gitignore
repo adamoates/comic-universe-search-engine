@@ -151,3 +151,6 @@ dist
 
 /data
 api/data/store.json
+
+# Claude Code
+.claude/
