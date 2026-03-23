@@ -154,3 +154,21 @@ api/data/store.json
 
 # Claude Code
 .claude/
+
+### Laravel ###
+/vendor/
+/public/build/
+/public/hot
+/public/storage
+/storage/*.key
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/views/
+/storage/logs/
+/bootstrap/cache/
+database/database.sqlite
+Homestead.json
+Homestead.yaml
+auth.json
+.phpunit.result.cache
+_ide_helper.php
