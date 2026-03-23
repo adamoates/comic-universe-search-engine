@@ -49,22 +49,44 @@ module.exports = () => {
     const offset = (pageNum - 1) * limit;
 
     try {
-      const { data } = await axios.get(`${COMIC_VINE_BASE}/search/`, {
-        params: {
-          api_key: getApiKey(),
-          format: "json",
-          query: query.trim(),
-          resources: type,
-          limit,
-          offset,
-        },
-        headers: { "User-Agent": "ComicUniverseSearchEngine" },
-        timeout: 10000,
-      });
+      let results, total;
+
+      if (type === "story_arc") {
+        // Comic Vine's /search/ endpoint ignores resources=story_arc and returns 0 results.
+        // Use the /story_arcs/ list endpoint with a name filter instead.
+        const { data } = await axios.get(`${COMIC_VINE_BASE}/story_arcs/`, {
+          params: {
+            api_key: getApiKey(),
+            format: "json",
+            filter: `name:${query.trim()}`,
+            limit,
+            offset,
+          },
+          headers: { "User-Agent": "ComicUniverseSearchEngine" },
+          timeout: 10000,
+        });
+        results = data.results;
+        total = data.number_of_total_results;
+      } else {
+        const { data } = await axios.get(`${COMIC_VINE_BASE}/search/`, {
+          params: {
+            api_key: getApiKey(),
+            format: "json",
+            query: query.trim(),
+            resources: type,
+            limit,
+            offset,
+          },
+          headers: { "User-Agent": "ComicUniverseSearchEngine" },
+          timeout: 10000,
+        });
+        results = data.results;
+        total = data.number_of_total_results;
+      }
 
       res.json({
-        results: data.results,
-        total: data.number_of_total_results,
+        results,
+        total,
         page: pageNum,
         limit,
       });
