@@ -6,6 +6,8 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const routes = require("./routes");
 const releaseRoutes = require("./routes/releases");
+const marvelRoutes = require("./routes/marvel");
+const enrichmentRoutes = require("./routes/enrichment");
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -36,6 +38,8 @@ app.use(morgan("tiny"));
 
 app.use("/", routes());
 app.use("/", releaseRoutes());
+app.use("/", marvelRoutes());
+app.use("/", enrichmentRoutes());
 
 // Global error handler – never leak internals
 app.use((err, _req, res, _next) => {

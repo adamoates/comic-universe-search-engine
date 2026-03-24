@@ -106,7 +106,11 @@ module.exports = () => {
       const { data } = await axios.get(
         `${COMIC_VINE_BASE}/character/4005-${req.params.id}/`,
         {
-          params: { api_key: getApiKey(), format: "json" },
+          params: {
+            api_key: getApiKey(),
+            format: "json",
+            field_list: "name,real_name,aliases,deck,description,image,publisher,first_appeared_in_issue,powers,teams,origin,gender,birth",
+          },
           headers: { "User-Agent": "ComicUniverseSearchEngine" },
           timeout: 10000,
         }
@@ -128,7 +132,11 @@ module.exports = () => {
       const { data } = await axios.get(
         `${COMIC_VINE_BASE}/issue/4000-${req.params.id}/`,
         {
-          params: { api_key: getApiKey(), format: "json" },
+          params: {
+            api_key: getApiKey(),
+            format: "json",
+            field_list: "name,issue_number,store_date,cover_date,deck,description,image,volume,person_credits,cover_price,page_count",
+          },
           headers: { "User-Agent": "ComicUniverseSearchEngine" },
           timeout: 10000,
         }
