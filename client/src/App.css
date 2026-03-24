@@ -1,12 +1,33 @@
+:root {
+  --color-bg: #1a1a2e;
+  --color-surface: #16213e;
+  --color-accent: #e23636;
+  --color-accent-dark: #c62828;
+  --color-tracked: #2e7d32;
+  --color-text: #eee;
+  --color-text-muted: #aaa;
+  --color-text-dim: #888;
+  --color-text-faint: #666;
+  --color-border: #333;
+  --color-border-dark: #222;
+  --color-info: #4fc3f7;
+  --color-warning: #ff9800;
+  --color-error: #ff6b6b;
+  --color-check-btn: #1565c0;
+  --color-check-btn-hover: #1976d2;
+  --color-border-mid: #555;
+  --color-text-secondary: #ccc;
+}
+
 .App {
   min-height: 100vh;
-  background: #1a1a2e;
-  color: #eee;
+  background: var(--color-bg);
+  color: var(--color-text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .App-header {
-  background: #e23636;
+  background: var(--color-accent);
   padding: 1.5rem;
   text-align: center;
 }
@@ -43,21 +64,21 @@ main {
   flex: 1;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  border: 2px solid #333;
+  border: 2px solid var(--color-border);
   border-radius: 6px;
-  background: #16213e;
-  color: #eee;
+  background: var(--color-surface);
+  color: var(--color-text);
   outline: none;
 }
 
 .search-input:focus {
-  border-color: #e23636;
+  border-color: var(--color-accent);
 }
 
 .search-btn {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  background: #e23636;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 6px;
@@ -66,7 +87,7 @@ main {
 }
 
 .search-btn:hover {
-  background: #c62828;
+  background: var(--color-accent-dark);
 }
 
 .search-btn:disabled {
@@ -82,26 +103,26 @@ main {
 
 .toggle-btn {
   padding: 0.5rem 1rem;
-  background: #16213e;
-  color: #aaa;
-  border: 1px solid #333;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   cursor: pointer;
 }
 
 .toggle-btn.active {
-  background: #e23636;
+  background: var(--color-accent);
   color: white;
-  border-color: #e23636;
+  border-color: var(--color-accent);
 }
 
 .error {
-  color: #ff6b6b;
+  color: var(--color-error);
   text-align: center;
 }
 
 .result-count {
-  color: #888;
+  color: var(--color-text-dim);
   margin-bottom: 1rem;
 }
 
@@ -112,7 +133,7 @@ main {
 }
 
 .result-card {
-  background: #16213e;
+  background: var(--color-surface);
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
@@ -140,14 +161,14 @@ main {
 }
 
 .card-info span {
-  color: #888;
+  color: var(--color-text-dim);
   font-size: 0.85rem;
 }
 
 .card-deck {
   margin: 0.5rem 0 0;
   font-size: 0.8rem;
-  color: #aaa;
+  color: var(--color-text-muted);
   line-height: 1.3;
 }
 
@@ -161,7 +182,7 @@ main {
 
 .pagination button {
   padding: 0.5rem 1rem;
-  background: #e23636;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 4px;
@@ -174,11 +195,11 @@ main {
 }
 
 .pagination span {
-  color: #888;
+  color: var(--color-text-dim);
 }
 
 .detail-panel {
-  background: #16213e;
+  background: var(--color-surface);
   border-radius: 8px;
   padding: 1.5rem;
 }
@@ -186,7 +207,7 @@ main {
 .back-btn {
   background: none;
   border: 1px solid #555;
-  color: #aaa;
+  color: var(--color-text-muted);
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
@@ -195,7 +216,7 @@ main {
 
 .back-btn:hover {
   color: white;
-  border-color: #e23636;
+  border-color: var(--color-accent);
 }
 
 .detail-content {
@@ -215,7 +236,7 @@ main {
 
 .real-name,
 .issue-num {
-  color: #888;
+  color: var(--color-text-dim);
   margin: 0 0 0.5rem;
 }
 
@@ -227,20 +248,20 @@ main {
 
 .description {
   font-size: 0.9rem;
-  color: #aaa;
+  color: var(--color-text-muted);
   line-height: 1.6;
 }
 
 .publisher,
 .first-appearance {
   margin-top: 1rem;
-  color: #888;
+  color: var(--color-text-dim);
   font-size: 0.85rem;
 }
 
 .placeholder {
   text-align: center;
-  color: #666;
+  color: var(--color-text-faint);
   margin-top: 4rem;
   font-size: 1.1rem;
 }
@@ -248,7 +269,7 @@ main {
 .App-footer {
   text-align: center;
   padding: 2rem 1rem;
-  color: #666;
+  color: var(--color-text-faint);
   font-size: 0.85rem;
 }
 
@@ -282,15 +303,15 @@ main {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: #16213e;
-  border-bottom: 1px solid #333;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .nav-btn {
   padding: 0.5rem 1.25rem;
   background: transparent;
-  color: #aaa;
-  border: 1px solid #333;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -300,9 +321,9 @@ main {
 }
 
 .nav-btn.active {
-  background: #e23636;
+  background: var(--color-accent);
   color: white;
-  border-color: #e23636;
+  border-color: var(--color-accent);
 }
 
 .nav-badge {
@@ -323,7 +344,7 @@ main {
 /* Track button */
 .track-btn {
   padding: 0.5rem 1rem;
-  background: #e23636;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 4px;
@@ -333,15 +354,15 @@ main {
 }
 
 .track-btn:hover {
-  background: #c62828;
+  background: var(--color-accent-dark);
 }
 
 .track-btn.tracked {
-  background: #2e7d32;
+  background: var(--color-tracked);
 }
 
 .track-btn.tracked:hover {
-  background: #c62828;
+  background: var(--color-accent-dark);
 }
 
 /* Card track button */
@@ -349,7 +370,7 @@ main {
   display: block;
   width: 100%;
   padding: 0.5rem;
-  background: #e23636;
+  background: var(--color-accent);
   color: white;
   border: none;
   cursor: pointer;
@@ -358,20 +379,20 @@ main {
 }
 
 .card-track-btn:hover {
-  background: #c62828;
+  background: var(--color-accent-dark);
 }
 
 .card-track-btn.tracked {
-  background: #2e7d32;
+  background: var(--color-tracked);
 }
 
 .card-track-btn.tracked:hover {
-  background: #c62828;
+  background: var(--color-accent-dark);
 }
 
 /* Release info */
 .release-info {
-  color: #4fc3f7;
+  color: var(--color-info);
   margin: 0.25rem 0;
   font-size: 0.9rem;
 }
@@ -423,8 +444,8 @@ main {
   right: 0;
   width: 340px;
   max-height: 400px;
-  background: #1a1a2e;
-  border: 1px solid #333;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   z-index: 100;
@@ -437,7 +458,7 @@ main {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .notification-header h3 {
@@ -448,7 +469,7 @@ main {
 .mark-all-read {
   background: none;
   border: none;
-  color: #4fc3f7;
+  color: var(--color-info);
   cursor: pointer;
   font-size: 0.75rem;
 }
@@ -460,7 +481,7 @@ main {
 
 .notification-empty {
   text-align: center;
-  color: #666;
+  color: var(--color-text-faint);
   padding: 2rem;
   font-size: 0.85rem;
 }
@@ -470,17 +491,17 @@ main {
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #222;
+  border-bottom: 1px solid var(--color-border-dark);
   cursor: pointer;
 }
 
 .notification-item:hover {
-  background: #16213e;
+  background: var(--color-surface);
 }
 
 .notification-item.unread {
   background: rgba(226, 54, 54, 0.05);
-  border-left: 3px solid #e23636;
+  border-left: 3px solid var(--color-accent);
 }
 
 .notification-img {
@@ -500,25 +521,25 @@ main {
   margin: 0;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #eee;
+  color: var(--color-text);
 }
 
 .notification-message {
   margin: 0.2rem 0 0;
   font-size: 0.75rem;
-  color: #aaa;
+  color: var(--color-text-muted);
 }
 
 .notification-time {
   font-size: 0.65rem;
-  color: #666;
+  color: var(--color-text-faint);
 }
 
 .unread-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #e23636;
+  background: var(--color-accent);
   flex-shrink: 0;
   margin-top: 0.25rem;
 }
@@ -538,24 +559,24 @@ main {
 
 .tracker-tab {
   padding: 0.5rem 1rem;
-  background: #16213e;
-  color: #aaa;
-  border: 1px solid #333;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
 }
 
 .tracker-tab.active {
-  background: #e23636;
+  background: var(--color-accent);
   color: white;
-  border-color: #e23636;
+  border-color: var(--color-accent);
 }
 
 .check-btn {
   margin-left: auto;
   padding: 0.5rem 1rem;
-  background: #1565c0;
+  background: var(--color-check-btn);
   color: white;
   border: none;
   border-radius: 4px;
@@ -564,7 +585,7 @@ main {
 }
 
 .check-btn:hover {
-  background: #1976d2;
+  background: var(--color-check-btn-hover);
 }
 
 .check-btn:disabled {
@@ -574,14 +595,14 @@ main {
 
 .empty-state {
   text-align: center;
-  color: #666;
+  color: var(--color-text-faint);
   padding: 3rem 1rem;
   font-size: 1rem;
 }
 
 .loading-text {
   text-align: center;
-  color: #888;
+  color: var(--color-text-dim);
   padding: 2rem;
 }
 
@@ -591,7 +612,7 @@ main {
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #16213e;
+  background: var(--color-surface);
   border-radius: 8px;
   margin-bottom: 0.75rem;
 }
@@ -627,13 +648,13 @@ main {
 
 .tracked-publisher {
   margin: 0.25rem 0 0;
-  color: #888;
+  color: var(--color-text-dim);
   font-size: 0.8rem;
 }
 
 .tracked-meta {
   margin: 0.25rem 0 0;
-  color: #666;
+  color: var(--color-text-faint);
   font-size: 0.75rem;
 }
 
@@ -641,7 +662,7 @@ main {
   padding: 0.4rem 0.8rem;
   background: none;
   border: 1px solid #555;
-  color: #aaa;
+  color: var(--color-text-muted);
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.8rem;
@@ -649,8 +670,8 @@ main {
 }
 
 .untrack-btn:hover {
-  color: #ff6b6b;
-  border-color: #ff6b6b;
+  color: var(--color-error);
+  border-color: var(--color-error);
 }
 
 /* Upcoming releases */
@@ -659,7 +680,7 @@ main {
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #16213e;
+  background: var(--color-surface);
   border-radius: 8px;
   margin-bottom: 0.75rem;
 }
@@ -684,14 +705,14 @@ main {
 
 .upcoming-deck {
   margin: 0.25rem 0 0;
-  color: #aaa;
+  color: var(--color-text-muted);
   font-size: 0.8rem;
   line-height: 1.3;
 }
 
 .upcoming-from {
   margin: 0.25rem 0 0;
-  color: #666;
+  color: var(--color-text-faint);
   font-size: 0.75rem;
 }
 
@@ -705,7 +726,7 @@ main {
   display: block;
   font-size: 0.65rem;
   text-transform: uppercase;
-  color: #888;
+  color: var(--color-text-dim);
   margin-bottom: 0.2rem;
 }
 
@@ -716,15 +737,186 @@ main {
 }
 
 .date-today .date-value {
-  color: #ff9800;
+  color: var(--color-warning);
 }
 
 .date-upcoming .date-value {
-  color: #4fc3f7;
+  color: var(--color-info);
 }
 
 .date-past .date-value {
-  color: #888;
+  color: var(--color-text-dim);
+}
+
+/* Source toggle (Comic Vine / Marvel) */
+.source-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.source-btn {
+  padding: 0.4rem 1rem;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.source-btn.active {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+.source-btn.marvel.active {
+  background: #c62828;
+  border-color: #b71c1c;
+}
+
+/* Aliases */
+.aliases {
+  color: var(--color-text-dim);
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+  font-style: italic;
+}
+
+/* Meta info (cover price, page count) */
+.meta-info {
+  color: var(--color-text-dim);
+  font-size: 0.85rem;
+  margin: 0.2rem 0;
+}
+
+/* Creators */
+.creators {
+  margin-top: 1.25rem;
+}
+
+.creators h4,
+.powers h4,
+.teams h4,
+.powerstats h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.creators-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.creator-tag {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* Powers / Teams tag lists */
+.powers,
+.teams {
+  margin-top: 1.25rem;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag {
+  background: rgba(226, 54, 54, 0.15);
+  color: #e57373;
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.tag-team {
+  background: rgba(79, 195, 247, 0.12);
+  color: var(--color-info);
+}
+
+.tag-more {
+  color: var(--color-text-faint);
+  font-size: 0.78rem;
+  align-self: center;
+}
+
+/* Power stats bars */
+.powerstats {
+  margin-top: 1.5rem;
+}
+
+.powerstats-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.power-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.power-label {
+  width: 90px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+  flex-shrink: 0;
+}
+
+.power-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.power-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e23636, #ff8a65);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.power-value {
+  width: 28px;
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.enrich-note {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+}
+
+/* Marvel attribution */
+.marvel-attribution {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border-dark);
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+  text-align: right;
 }
 
 @media (max-width: 600px) {
