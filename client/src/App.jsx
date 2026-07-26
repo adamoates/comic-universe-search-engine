@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import InvestmentDashboard from "./components/InvestmentDashboard";
+import IssueDetail from "./components/IssueDetail";
 import ReleaseTracker from "./components/ReleaseTracker";
+import WatchlistManager from "./components/WatchlistManager";
 import NotificationBell from "./components/NotificationBell";
+import LoginPage from "./components/LoginPage";
+import RegisterPage from "./components/RegisterPage";
+import { apiGet, apiPost, apiDelete } from "./services/api";
 import "./App.css";
 
-function App() {
+function AppContent() {
+  const { isAuthenticated, logout, user } = useAuth();
+  const [view, setView] = useState("scanner");
+  const [authMode, setAuthMode] = useState("login");
+
   const [query, setQuery] = useState("");
   const [type, setType] = useState("character");
   const [results, setResults] = useState([]);
@@ -12,30 +23,31 @@ function App() {
   const [error, setError] = useState(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [view, setView] = useState("search");
+
   const [trackedItems, setTrackedItems] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [viewingIssueId, setViewingIssueId] = useState(null);
 
   useEffect(() => {
-    fetchTracked();
-    fetchNotifications();
-  }, []);
+    if (isAuthenticated) {
+      fetchTracked();
+      fetchNotifications();
+    }
+  }, [isAuthenticated]);
 
   const fetchTracked = async () => {
     try {
-      const res = await fetch("/api/releases/tracked");
-      const data = await res.json();
+      const data = await apiGet("/releases/tracked");
       setTrackedItems(data.tracked || []);
     } catch (err) {
-      console.error("Failed to fetch tracked items:", err.message);
+      console.error("Failed to fetch tracked:", err.message);
     }
   };
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch("/api/releases/notifications");
-      const data = await res.json();
+      const data = await apiGet("/releases/notifications");
       setNotifications(data.notifications || []);
       setUnreadCount(data.unread || 0);
     } catch (err) {
@@ -72,7 +84,6 @@ function App() {
       type === "character"
         ? `/api/characters/${item.id}`
         : `/api/issues/${item.id}`;
-
     try {
       const res = await fetch(endpoint);
       const data = await res.json();
@@ -98,18 +109,13 @@ function App() {
 
   const trackItem = async (item, resourceType) => {
     try {
-      const res = await fetch("/api/releases/track", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          comicVineId: String(item.id),
-          resourceType,
-          name: item.name || item.volume?.name || "Unknown",
-          image: item.image?.small_url || item.image?.thumb_url || null,
-          publisher: item.publisher?.name || null,
-        }),
+      const data = await apiPost("/releases/track", {
+        comicVineId: String(item.id),
+        resourceType,
+        name: item.name || item.volume?.name || "Unknown",
+        imageUrl: item.image?.small_url || item.image?.thumb_url || null,
+        publisher: item.publisher?.name || null,
       });
-      const data = await res.json();
       if (data.error) throw new Error(data.error);
       fetchTracked();
     } catch (err) {
@@ -119,7 +125,7 @@ function App() {
 
   const untrackItem = async (id) => {
     try {
-      await fetch(`/api/releases/track/${id}`, { method: "DELETE" });
+      await apiDelete(`/releases/track/${id}`);
       fetchTracked();
     } catch (err) {
       setError(err.message);
@@ -128,24 +134,33 @@ function App() {
 
   const isTracked = (comicVineId, resourceType) => {
     return trackedItems.some(
-      (t) => t.comicVineId === String(comicVineId) && t.resourceType === resourceType
+      (t) =>
+        t.comicVineId === String(comicVineId) && t.resourceType === resourceType
     );
   };
 
   const getTrackableType = () => {
-    if (type === "volume" || type === "character" || type === "story_arc") {
+    if (type === "volume" || type === "character" || type === "story_arc")
       return type;
-    }
     return null;
   };
+
+  if (!isAuthenticated) {
+    if (authMode === "register") {
+      return <RegisterPage onSwitch={() => setAuthMode("login")} />;
+    }
+    return <LoginPage onSwitch={() => setAuthMode("register")} />;
+  }
 
   return (
     <div className="App">
       <header className="App-header">
         <div className="header-content">
           <div>
-            <h1>Comic Universe Search Engine</h1>
-            <p className="subtitle">Powered by Comic Vine</p>
+            <h1>Comic Investment Scanner</h1>
+            <p className="subtitle">
+              Find valuable comics before they hit shelves
+            </p>
           </div>
           <div className="header-actions">
             <NotificationBell
@@ -153,11 +168,21 @@ function App() {
               unread={unreadCount}
               onRefresh={fetchNotifications}
             />
+            <span className="user-name">{user?.displayName || user?.email}</span>
+            <button className="logout-btn" onClick={logout}>
+              Logout
+            </button>
           </div>
         </div>
       </header>
 
       <nav className="main-nav">
+        <button
+          className={`nav-btn ${view === "scanner" ? "active" : ""}`}
+          onClick={() => { setView("scanner"); setViewingIssueId(null); }}
+        >
+          This Week
+        </button>
         <button
           className={`nav-btn ${view === "search" ? "active" : ""}`}
           onClick={() => setView("search")}
@@ -165,10 +190,16 @@ function App() {
           Search
         </button>
         <button
+          className={`nav-btn ${view === "watchlist" ? "active" : ""}`}
+          onClick={() => setView("watchlist")}
+        >
+          Watchlist
+        </button>
+        <button
           className={`nav-btn ${view === "tracker" ? "active" : ""}`}
           onClick={() => setView("tracker")}
         >
-          Release Tracker
+          Tracked
           {trackedItems.length > 0 && (
             <span className="nav-badge">{trackedItems.length}</span>
           )}
@@ -176,6 +207,32 @@ function App() {
       </nav>
 
       <main>
+        {view === "scanner" && !viewingIssueId && (
+          <InvestmentDashboard
+            onViewIssue={(id) => setViewingIssueId(id)}
+          />
+        )}
+
+        {view === "scanner" && viewingIssueId && (
+          <IssueDetail
+            comicVineId={viewingIssueId}
+            onBack={() => setViewingIssueId(null)}
+          />
+        )}
+
+        {view === "watchlist" && <WatchlistManager />}
+
+        {view === "tracker" && (
+          <ReleaseTracker
+            trackedItems={trackedItems}
+            onUntrack={untrackItem}
+            onRefresh={() => {
+              fetchTracked();
+              fetchNotifications();
+            }}
+          />
+        )}
+
         {view === "search" && (
           <>
             <form className="search-form" onSubmit={handleSubmit}>
@@ -192,34 +249,22 @@ function App() {
                 </button>
               </div>
               <div className="type-toggle">
-                <button
-                  type="button"
-                  className={`toggle-btn ${type === "character" ? "active" : ""}`}
-                  onClick={() => setType("character")}
-                >
-                  Characters
-                </button>
-                <button
-                  type="button"
-                  className={`toggle-btn ${type === "issue" ? "active" : ""}`}
-                  onClick={() => setType("issue")}
-                >
-                  Comics
-                </button>
-                <button
-                  type="button"
-                  className={`toggle-btn ${type === "volume" ? "active" : ""}`}
-                  onClick={() => setType("volume")}
-                >
-                  Volumes
-                </button>
-                <button
-                  type="button"
-                  className={`toggle-btn ${type === "story_arc" ? "active" : ""}`}
-                  onClick={() => setType("story_arc")}
-                >
-                  Story Arcs
-                </button>
+                {["character", "issue", "volume", "story_arc"].map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`toggle-btn ${type === t ? "active" : ""}`}
+                    onClick={() => setType(t)}
+                  >
+                    {t === "character"
+                      ? "Characters"
+                      : t === "issue"
+                        ? "Comics"
+                        : t === "volume"
+                          ? "Volumes"
+                          : "Story Arcs"}
+                  </button>
+                ))}
               </div>
             </form>
 
@@ -228,7 +273,10 @@ function App() {
             {selected && (
               <div className="detail-panel">
                 <div className="detail-actions">
-                  <button className="back-btn" onClick={() => setSelected(null)}>
+                  <button
+                    className="back-btn"
+                    onClick={() => setSelected(null)}
+                  >
                     Back to results
                   </button>
                   {getTrackableType() && (
@@ -266,7 +314,9 @@ function App() {
                       <p className="real-name">{selected.real_name}</p>
                     )}
                     {selected.issue_number && (
-                      <p className="issue-num">Issue #{selected.issue_number}</p>
+                      <p className="issue-num">
+                        Issue #{selected.issue_number}
+                      </p>
                     )}
                     {selected.store_date && (
                       <p className="release-info">
@@ -282,7 +332,8 @@ function App() {
                     {selected.description && (
                       <div className="description">
                         {stripHtml(selected.description).slice(0, 1000)}
-                        {stripHtml(selected.description).length > 1000 && "..."}
+                        {stripHtml(selected.description).length > 1000 &&
+                          "..."}
                       </div>
                     )}
                     {selected.publisher && (
@@ -292,7 +343,8 @@ function App() {
                     )}
                     {selected.first_appeared_in_issue && (
                       <p className="first-appearance">
-                        First appearance: {selected.first_appeared_in_issue.name}
+                        First appearance:{" "}
+                        {selected.first_appeared_in_issue.name}
                       </p>
                     )}
                   </div>
@@ -323,7 +375,9 @@ function App() {
                         <h3>{item.name || item.volume?.name}</h3>
                         {item.issue_number && <span>#{item.issue_number}</span>}
                         {item.deck && (
-                          <p className="card-deck">{item.deck.slice(0, 120)}</p>
+                          <p className="card-deck">
+                            {item.deck.slice(0, 120)}
+                          </p>
                         )}
                       </div>
                       {getTrackableType() && (
@@ -343,7 +397,9 @@ function App() {
                             }
                           }}
                         >
-                          {isTracked(item.id, getTrackableType()) ? "Tracking" : "Track"}
+                          {isTracked(item.id, getTrackableType())
+                            ? "Tracking"
+                            : "Track"}
                         </button>
                       )}
                     </div>
@@ -373,21 +429,10 @@ function App() {
 
             {!selected && !loading && results.length === 0 && !error && (
               <p className="placeholder">
-                Search for your favorite characters, comics, volumes, or story arcs above.
+                Search for characters, comics, volumes, or story arcs.
               </p>
             )}
           </>
-        )}
-
-        {view === "tracker" && (
-          <ReleaseTracker
-            trackedItems={trackedItems}
-            onUntrack={untrackItem}
-            onRefresh={() => {
-              fetchTracked();
-              fetchNotifications();
-            }}
-          />
         )}
       </main>
 
@@ -402,6 +447,14 @@ function App() {
         </a>
       </footer>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

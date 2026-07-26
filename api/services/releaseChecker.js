@@ -1,7 +1,17 @@
 const axios = require("axios");
-const store = require("./store");
+const prisma = require("./db");
 
 const COMIC_VINE_BASE = "https://comicvine.gamespot.com/api";
+
+const ISSUE_FIELDS = [
+  "id", "name", "issue_number", "store_date", "cover_date",
+  "volume", "image", "deck", "description",
+  "first_appearance_characters", "first_appearance_teams",
+  "first_appearance_concepts", "first_appearance_locations",
+  "first_appearance_objects",
+  "character_credits", "person_credits", "story_arc_credits",
+  "character_died_in",
+].join(",");
 
 function getApiKey() {
   const key = process.env.COMIC_VINE_API_KEY;
@@ -14,6 +24,10 @@ const apiClient = axios.create({
   timeout: 15000,
   headers: { "User-Agent": "ComicUniverseSearchEngine" },
 });
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 async function fetchVolumeIssues(volumeId) {
   const { data } = await apiClient.get(`/volume/4050-${volumeId}/`, {
@@ -31,8 +45,7 @@ async function fetchIssueDetail(issueId) {
     params: {
       api_key: getApiKey(),
       format: "json",
-      field_list:
-        "id,name,issue_number,store_date,cover_date,volume,image,deck,description",
+      field_list: ISSUE_FIELDS,
     },
   });
   return data.results;
@@ -60,6 +73,38 @@ async function fetchStoryArcIssues(storyArcId) {
   return data.results;
 }
 
+async function fetchIssuesByStoreDate(dateString, delayMs = 1000) {
+  const allIssues = [];
+  let offset = 0;
+  const limit = 100;
+
+  while (true) {
+    const { data } = await apiClient.get("/issues/", {
+      params: {
+        api_key: getApiKey(),
+        format: "json",
+        field_list: ISSUE_FIELDS,
+        filter: `store_date:${dateString}`,
+        limit,
+        offset,
+        sort: "id:asc",
+      },
+    });
+
+    const results = data.results || [];
+    allIssues.push(...results);
+
+    if (results.length < limit || allIssues.length >= data.number_of_total_results) {
+      break;
+    }
+
+    offset += limit;
+    await sleep(delayMs);
+  }
+
+  return allIssues;
+}
+
 async function getUpcomingForTracked(trackedItem) {
   const today = new Date().toISOString().split("T")[0];
   let issues = [];
@@ -83,7 +128,6 @@ async function getUpcomingForTracked(trackedItem) {
     return [];
   }
 
-  // Fetch details for recent issues to get dates
   const detailed = [];
   for (const issue of issues) {
     try {
@@ -118,8 +162,10 @@ async function getUpcomingForTracked(trackedItem) {
     });
 }
 
-async function checkForNewReleases() {
-  const tracked = store.getTracked();
+async function checkForNewReleases(userId) {
+  const tracked = await prisma.trackedItem.findMany({
+    where: { userId },
+  });
   const newReleases = [];
 
   for (const item of tracked) {
@@ -130,41 +176,37 @@ async function checkForNewReleases() {
       for (const issue of issues) {
         const releaseDate = issue.storeDate || issue.coverDate;
 
-        // Notify about issues releasing today or in the future
         if (releaseDate >= today) {
           const isNew =
-            !item.latestKnownIssueId || issue.id !== item.latestKnownIssueId;
+            !item.latestKnownIssueId || String(issue.id) !== item.latestKnownIssueId;
 
           if (isNew) {
-            const notification = {
-              type: releaseDate === today ? "released_today" : "upcoming",
-              title: `${issue.name || issue.volume?.name} #${issue.issueNumber || "?"}`,
-              message:
-                releaseDate === today
-                  ? `New release today from "${item.name}"!`
-                  : `Upcoming release on ${releaseDate} from "${item.name}"`,
-              resourceType: "issue",
-              comicVineId: issue.id,
-              releaseDate,
-              image: issue.image,
-            };
-            store.addNotification(notification);
+            const notification = await prisma.notification.create({
+              data: {
+                userId,
+                type: releaseDate === today ? "released_today" : "upcoming",
+                title: `${issue.name || issue.volume?.name} #${issue.issueNumber || "?"}`,
+                message:
+                  releaseDate === today
+                    ? `New release today from "${item.name}"!`
+                    : `Upcoming release on ${releaseDate} from "${item.name}"`,
+                imageUrl: issue.image?.small_url || null,
+              },
+            });
             newReleases.push(notification);
           }
         }
       }
 
-      // Update last checked and latest known issue
-      if (issues.length > 0) {
-        store.updateTracked(item.id, {
-          lastChecked: new Date().toISOString(),
-          latestKnownIssueId: issues[0].id,
-        });
-      } else {
-        store.updateTracked(item.id, {
-          lastChecked: new Date().toISOString(),
-        });
-      }
+      await prisma.trackedItem.update({
+        where: { id: item.id },
+        data: {
+          lastChecked: new Date(),
+          ...(issues.length > 0 && {
+            latestKnownIssueId: String(issues[0].id),
+          }),
+        },
+      });
     } catch (err) {
       console.error(`Release check failed for ${item.name}:`, err.message);
     }
@@ -177,4 +219,5 @@ module.exports = {
   checkForNewReleases,
   getUpcomingForTracked,
   fetchIssueDetail,
+  fetchIssuesByStoreDate,
 };

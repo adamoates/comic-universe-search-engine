@@ -1,15 +1,16 @@
 import { useState } from "react";
+import { apiFetch } from "../services/api";
 
 function NotificationBell({ notifications, unread, onRefresh }) {
   const [open, setOpen] = useState(false);
 
   const markRead = async (id) => {
-    await fetch(`/api/releases/notifications/${id}/read`, { method: "PUT" });
+    await apiFetch(`/releases/notifications/${id}/read`, { method: "PUT" });
     onRefresh();
   };
 
   const markAllRead = async () => {
-    await fetch("/api/releases/notifications/read-all", { method: "PUT" });
+    await apiFetch("/releases/notifications/read-all", { method: "PUT" });
     onRefresh();
   };
 
@@ -68,9 +69,9 @@ function NotificationBell({ notifications, unread, onRefresh }) {
                 className={`notification-item ${notif.read ? "" : "unread"}`}
                 onClick={() => !notif.read && markRead(notif.id)}
               >
-                {notif.image && (
+                {notif.imageUrl && (
                   <img
-                    src={notif.image.icon_url || notif.image.thumb_url || notif.image}
+                    src={notif.imageUrl}
                     alt=""
                     className="notification-img"
                   />

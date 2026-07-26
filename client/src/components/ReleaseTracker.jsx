@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { apiGet, apiPost } from "../services/api";
 
 function ReleaseTracker({ trackedItems, onUntrack, onRefresh }) {
   const [upcoming, setUpcoming] = useState([]);
@@ -15,8 +16,7 @@ function ReleaseTracker({ trackedItems, onUntrack, onRefresh }) {
   const fetchUpcoming = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/releases/upcoming");
-      const data = await res.json();
+      const data = await apiGet("/releases/upcoming");
       if (data.error) throw new Error(data.error);
       setUpcoming(data.releases || []);
     } catch (err) {
@@ -29,8 +29,7 @@ function ReleaseTracker({ trackedItems, onUntrack, onRefresh }) {
   const checkNow = async () => {
     setChecking(true);
     try {
-      const res = await fetch("/api/releases/check", { method: "POST" });
-      const data = await res.json();
+      const data = await apiPost("/releases/check", {});
       if (data.error) throw new Error(data.error);
       if (data.newReleases > 0) {
         fetchUpcoming();

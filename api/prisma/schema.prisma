@@ -1,0 +1,175 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  passwordHash    String
+  displayName     String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  trackedItems    TrackedItem[]
+  watchlistEntries WatchlistEntry[]
+  notifications   Notification[]
+  scanPreference  ScanPreference?
+}
+
+model ScanPreference {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  minScoreThreshold     Int      @default(30)
+  notifyFirstAppearance Boolean  @default(true)
+  notifyKeyCreator      Boolean  @default(true)
+  notifyMovieSpec       Boolean  @default(true)
+  notifyIssueOne        Boolean  @default(true)
+  notifyDeath           Boolean  @default(true)
+  publishers            String[] @default(["Marvel", "DC Comics", "Image"])
+}
+
+model WeeklyScan {
+  id           String        @id @default(cuid())
+  storeDate    DateTime      @unique @db.Date
+  startedAt    DateTime      @default(now())
+  completedAt  DateTime?
+  totalIssues  Int           @default(0)
+  flaggedCount Int           @default(0)
+  status       ScanStatus    @default(RUNNING)
+  scoredIssues ScoredIssue[]
+}
+
+enum ScanStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model ScoredIssue {
+  id                      String      @id @default(cuid())
+  comicVineId             Int         @unique
+  name                    String?
+  issueNumber             String?
+  volumeName              String?
+  volumeId                Int?
+  publisher               String?
+  storeDate               DateTime?   @db.Date
+  coverDate               DateTime?   @db.Date
+  imageUrl                String?
+  thumbnailUrl            String?
+  deck                    String?
+
+  totalScore              Int         @default(0)
+  scoreBreakdown          Json        @default("{}")
+
+  hasFirstAppearance      Boolean     @default(false)
+  firstAppearanceDetails  Json?
+  isIssueOne              Boolean     @default(false)
+  hasKeyCreator           Boolean     @default(false)
+  keyCreatorDetails       Json?
+  hasMovieSpec            Boolean     @default(false)
+  movieSpecDetails        Json?
+  hasDeathIssue           Boolean     @default(false)
+  deathDetails            Json?
+  hasStoryArcSignificance Boolean     @default(false)
+  storyArcDetails         Json?
+
+  characterCredits        Json?
+  personCredits           Json?
+  storyArcCredits         Json?
+
+  weeklyScanId            String?
+  weeklyScan              WeeklyScan? @relation(fields: [weeklyScanId], references: [id])
+  priceData               PriceData[]
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  @@index([storeDate])
+  @@index([totalScore])
+  @@index([hasFirstAppearance])
+}
+
+model TrackedItem {
+  id                 String    @id @default(cuid())
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comicVineId        String
+  resourceType       String
+  name               String
+  imageUrl           String?
+  publisher          String?
+  trackedAt          DateTime  @default(now())
+  lastChecked        DateTime?
+  latestKnownIssueId String?
+
+  @@unique([userId, comicVineId, resourceType])
+}
+
+model WatchlistEntry {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entityType     String
+  comicVineId    Int?
+  name           String
+  production     String?
+  productionType String?
+  confidence     String   @default("rumored")
+  notes          String?
+  sourceUrl      String?
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, comicVineId, entityType])
+  @@index([comicVineId])
+  @@index([name])
+}
+
+model PriceData {
+  id            String      @id @default(cuid())
+  scoredIssueId String
+  scoredIssue   ScoredIssue @relation(fields: [scoredIssueId], references: [id], onDelete: Cascade)
+  source        String
+  searchQuery   String
+  averagePrice  Float?
+  medianPrice   Float?
+  lowPrice      Float?
+  highPrice     Float?
+  sampleSize    Int         @default(0)
+  rawListings   Json?
+  fetchedAt     DateTime    @default(now())
+
+  @@index([scoredIssueId])
+}
+
+model Notification {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          String
+  title         String
+  message       String
+  scoredIssueId String?
+  imageUrl      String?
+  read          Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+}
+
+model HotCreator {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  comicVineId Int?     @unique
+  tier        Int      @default(2)
+  notes       String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}

@@ -1,0 +1,25 @@
+module.exports = {
+  weights: {
+    firstAppearanceCharacter: 50,
+    firstAppearanceTeam: 40,
+    firstAppearanceConcept: 10,
+    issueOne: 15,
+    keyCreatorTier1: 20,
+    keyCreatorTier2: 12,
+    keyCreatorTier3: 5,
+    movieSpecConfirmed: 25,
+    movieSpecRumored: 15,
+    movieSpeculation: 8,
+    deathIssue: 30,
+    storyArcStart: 10,
+  },
+  thresholds: { high: 50, medium: 25, low: 10 },
+  valuableCreatorRoles: new Set([
+    "writer",
+    "artist",
+    "penciler",
+    "cover",
+    "penciller",
+    "painter",
+  ]),
+};

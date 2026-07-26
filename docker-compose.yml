@@ -1,6 +1,17 @@
 version: "4.8.1"
 services:
-  client: 
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: comic_user
+      POSTGRES_PASSWORD: comic_pass
+      POSTGRES_DB: comic_scanner
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  client:
     container_name: client
     restart: always
     build: ./client
@@ -15,3 +26,7 @@ services:
     env_file: ./.env
     ports:
       - "4000:4000"
+    depends_on:
+      - postgres
+volumes:
+  pgdata:

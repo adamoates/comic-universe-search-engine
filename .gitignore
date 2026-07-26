@@ -151,3 +151,4 @@ dist
 
 /data
 api/data/store.json
+api/prisma/migrations/**/migration_lock.toml
